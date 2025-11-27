@@ -224,3 +224,40 @@ h1 {
         gap: 10px;
     }
 }
+
+/* 連続数の通知 */
+.announcement {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    font-size: 4rem;
+    font-weight: bold;
+    padding: 30px 60px;
+    border-radius: 20px;
+    z-index: 1000;
+    animation: popIn 0.3s ease-out, fadeOut 0.5s ease-in 1s forwards;
+    pointer-events: none;
+}
+
+@keyframes popIn {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

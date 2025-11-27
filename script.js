@@ -94,6 +94,14 @@ function placeStone(row, col) {
         return;
     }
 
+    // 連続数チェック（3個、4個の通知）
+    const maxConsecutive = getMaxConsecutive(row, col, currentPlayer);
+    if (maxConsecutive === 4) {
+        announceConsecutive('4個');
+    } else if (maxConsecutive === 3) {
+        announceConsecutive('3個');
+    }
+
     // 引き分け判定
     if (checkDraw()) {
         isGameActive = false;
@@ -105,6 +113,59 @@ function placeStone(row, col) {
     // プレイヤー交代
     currentPlayer = currentPlayer === CELL_BLACK ? CELL_WHITE : CELL_BLACK;
     updateStatus();
+}
+
+// 最大連続数を取得
+function getMaxConsecutive(row, col, player) {
+    const directions = [
+        { dr: 0, dc: 1 },  // 横
+        { dr: 1, dc: 0 },  // 縦
+        { dr: 1, dc: 1 },  // 右下がり斜め
+        { dr: 1, dc: -1 }  // 左下がり斜め
+    ];
+
+    let maxCount = 1;
+
+    for (const { dr, dc } of directions) {
+        let count = 1;
+
+        // 正方向
+        let r = row + dr;
+        let c = col + dc;
+        while (isValidCell(r, c) && board[r][c] === player) {
+            count++;
+            r += dr;
+            c += dc;
+        }
+
+        // 負方向
+        r = row - dr;
+        c = col - dc;
+        while (isValidCell(r, c) && board[r][c] === player) {
+            count++;
+            r -= dr;
+            c -= dc;
+        }
+
+        if (count > maxCount) {
+            maxCount = count;
+        }
+    }
+
+    return maxCount;
+}
+
+// 連続数の通知
+function announceConsecutive(message) {
+    const announcement = document.createElement('div');
+    announcement.className = 'announcement';
+    announcement.textContent = message;
+    document.body.appendChild(announcement);
+
+    // アニメーション後に削除
+    setTimeout(() => {
+        announcement.remove();
+    }, 1500);
 }
 
 // CPUの思考ルーチン
